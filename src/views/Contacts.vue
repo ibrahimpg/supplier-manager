@@ -7,8 +7,6 @@
         :key='contact.key'
         :contactId=contact[3].value
         :contactType=contact[7].value
-        :directPhone=contact[15].value
-        :fax=contact[16].value
         :email=contact[17].value
         :mobilePhone=contact[30].value
         :title=contact[31].value
@@ -37,6 +35,17 @@ export default {
   },
   methods: {
     updateContacts() { this.$store.dispatch('getContacts'); },
+    async loadContacts() {
+      const apiLink = 'https://gto-supplier-portal-api.herokuapp.com/api/create-contact';
+
+      const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${this.token}` };
+
+      const body = JSON.stringify(this.cardData);
+
+      const response = await fetch(apiLink, { method: 'POST', headers, body });
+
+      console.log(response);
+    },
   },
   computed: {
     contacts() { return this.$store.state.supplierContacts; },

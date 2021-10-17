@@ -2,33 +2,45 @@
   <v-app>
 
     <v-app-bar color="blue darken-1" dark app>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon v-if="loggedIn" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
       <h2 style="user-select: none; margin-left: 5px;">Supplier Manager</h2>
 
       <v-spacer></v-spacer>
 
-      <h2 style="user-select: none; margin-right: 15px;">{{ this.$store.state.username }}</h2>
+      <h2 v-if="loggedIn" style="user-select: none; margin-right: 15px;">
+        {{ this.$store.state.companyName }}
+      </h2>
 
-      <v-btn color="white" outlined>Logout</v-btn>
+      <img
+        v-if="loggedIn"
+        :src=companyImg alt="Company logo"
+        style="margin-right: 15px; height: 35px; width: 35px; border-radius: 50%"
+      >
+
+      <v-btn
+        v-if="loggedIn" @click="logout" color="white" outlined
+      >
+      Logout
+      </v-btn>
     </v-app-bar>
 
-    <v-navigation-drawer v-model="drawer" absolute bottom temporary>
+    <v-navigation-drawer v-model="drawer" app bottom temporary>
       <v-list nav dense>
-        <v-list-item-group v-model="group" active-class="deep-purple--text text--accent-4">
-          <v-list-item>
+        <v-list-item-group v-model="group" active-class="blue--text text--accent-4">
+          <v-list-item @click="routeTo('/')">
             <v-list-item-title>Account Settings</v-list-item-title>
           </v-list-item>
 
-          <v-list-item>
+          <v-list-item @click="routeTo('/contacts')">
             <v-list-item-title>Contacts</v-list-item-title>
           </v-list-item>
 
-          <v-list-item>
+          <v-list-item @click="routeTo('/products')">
             <v-list-item-title>Products</v-list-item-title>
           </v-list-item>
 
-          <v-list-item>
+          <v-list-item @click="routeTo('/add-product')">
             <v-list-item-title>Add New Product</v-list-item-title>
           </v-list-item>
         </v-list-item-group>
@@ -39,6 +51,15 @@
       <router-view/>
     </v-main>
 
+    <v-snackbar :value="show">
+      {{ message }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="orange lighten-2" text v-bind="attrs" @click="notifyClear">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+
   </v-app>
 </template>
 
@@ -47,14 +68,22 @@
 export default {
   name: 'App',
   computed: {
-    loggedIn() {
-      return this.$store.state.loggedIn;
-    },
+    loggedIn() { return this.$store.state.loggedIn; },
+    show() { return this.$store.state.notification.show; },
+    message() { return this.$store.state.notification.message; },
+    companyImg() { return this.$store.state.companyImg; },
   },
   data: () => ({
     drawer: false,
     group: null,
   }),
+  methods: {
+    routeTo(dest) {
+      this.$router.push({ path: dest });
+    },
+    notifyClear() { this.$store.commit('notifyClear'); },
+    logout() { this.$store.commit('logout'); },
+  },
   watch: {
     group() {
       this.drawer = false;
