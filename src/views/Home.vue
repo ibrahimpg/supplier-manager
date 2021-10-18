@@ -1,37 +1,67 @@
 <template>
-  <div v-if="loggedIn">
-    {{ companyName }}
-    {{ companyDescription }}
-    <img :src=companyImg alt="Company logo" class="companyPicture">
+  <div v-if="loggedIn" style="display: flex; flex-direction: column; align-items: center;">
+    <v-card
+      elevation="2"
+      max-width=550
+      width="100%"
+      style="max-height:450px;height:100%;margin-top:50px;"
+    >
+      <v-img :src=this.$store.state.companyImg
+      alt="Company logo" height="200px" style="border-radius:50%" contain>
+      </v-img>
+      <v-card-title>{{$store.state.username}}</v-card-title>
+      <v-card-subtitle class="pb-0">{{$store.state.email}}</v-card-subtitle>
+
+      <v-card-text class="text--primary">
+        <div>Whitehaven Beach</div>
+
+        <div>Whitsunday Island, Whitsunday Islands</div>
+      </v-card-text>
+
+      <v-card-actions>
+        <v-btn color="orange" text>
+          Update Profile
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+    <div
+      style="max-width:550px;width:100%;margin-top:25px;display:flex;justify-content:space-between"
+    >
+      <v-btn color="orange lighten-2" @click="routeTo('/contacts')" style="width:150px;">
+        Contacts
+      </v-btn>
+      <v-btn color="orange lighten-2" @click="routeTo('/products')" style="width:150px;">
+        Products
+      </v-btn>
+      <v-btn color="orange lighten-2" @click="routeTo('/new-product')" style="width:150px;">
+        New Product
+      </v-btn>
+    </div>
   </div>
   <div v-else class="centeredContent">
-    <LoginCard v-if="show === 'login'" @child-data="showRegister" />
-    <RegisterCard v-if="show === 'register'" @child-data="showLogin" />
+    <LoginCard />
   </div>
 </template>
 
 <script>
-import RegisterCard from '@/components/RegisterCard.vue';
 import LoginCard from '@/components/LoginCard.vue';
 
 export default {
   name: 'Home',
-  components: { LoginCard, RegisterCard },
+  components: { LoginCard },
   data() {
     return {
-      show: 'login',
     };
   },
   computed: {
     loggedIn() { return this.$store.state.loggedIn; },
     username() { return this.$store.state.username; },
-    companyName() { return this.$store.state.companyName; },
-    companyDescription() { return this.$store.state.companyDescription; },
     companyImg() { return this.$store.state.companyImg; },
   },
   methods: {
-    showLogin() { this.show = 'login'; },
-    showRegister() { this.show = 'register'; },
+    routeTo(dest) {
+      this.$router.push({ path: dest });
+    },
   },
 };
 </script>

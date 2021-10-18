@@ -8,14 +8,14 @@
 
       <v-spacer></v-spacer>
 
-      <h2 v-if="loggedIn" style="user-select: none; margin-right: 15px;">
-        {{ this.$store.state.companyName }}
-      </h2>
+      <h3 v-if="loggedIn" style="user-select: none; margin-right: 15px;">
+        {{ this.$store.state.username }}
+      </h3>
 
       <img
         v-if="loggedIn"
         :src=companyImg alt="Company logo"
-        style="margin-right: 15px; height: 35px; width: 35px; border-radius: 50%"
+        style="margin-right: 16px; height: 35px; width: 35px; border-radius: 50%"
       >
 
       <v-btn
@@ -29,7 +29,7 @@
       <v-list nav dense>
         <v-list-item-group v-model="group" active-class="blue--text text--accent-4">
           <v-list-item @click="routeTo('/')">
-            <v-list-item-title>Account Settings</v-list-item-title>
+            <v-list-item-title>Account</v-list-item-title>
           </v-list-item>
 
           <v-list-item @click="routeTo('/contacts')">
@@ -40,8 +40,8 @@
             <v-list-item-title>Products</v-list-item-title>
           </v-list-item>
 
-          <v-list-item @click="routeTo('/add-product')">
-            <v-list-item-title>Add New Product</v-list-item-title>
+          <v-list-item @click="routeTo('/new-product')">
+            <v-list-item-title>New Product</v-list-item-title>
           </v-list-item>
         </v-list-item-group>
       </v-list>

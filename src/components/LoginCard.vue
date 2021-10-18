@@ -1,55 +1,63 @@
 <template>
-  <v-card elevation="2" max-width=550 width="100%" style="padding:10px">
+  <v-card elevation="2" max-width=550 width="100%"
+  style="padding:10px;max-height: 350px; height: 100%">
 
     <v-container>
       <v-row>
         <v-col>
 
           <span v-if="show === 'login'">
+            <p class="text-h4 text--primary">Login</p>
             <v-text-field v-model="username" label="Username" required></v-text-field>
-            <br>
             <v-text-field v-model="password" label="Password" type="password" required>
             </v-text-field>
-            <br>
           </span>
 
           <span v-if="show === 'reg'">
+            <p class="text-h4 text--primary">Register</p>
             <v-text-field v-model="username" :rules="usernameRules" label="Username" required>
             </v-text-field>
-            <br>
             <v-text-field v-model="email" :rules="emailRules" label="E-mail" type="email" required>
             </v-text-field>
-            <br>
             <v-text-field v-model="password" :rules="pwR" label="Password" type="password" required>
             </v-text-field>
-            <br>
           </span>
 
           <span v-if="show === 'forgot'">
+            <p class="text-h4 text--primary">Reset Password</p>
+            <div class="text--primary" style="max-width: 450px;">
+              Your password will be reset and emailed to you.
+              Check your email for your new password and make
+              sure you change your password immediately.
+              <br><br>
+            </div>
             <v-text-field v-model="email" :rules="emailRules" label="E-mail" type="email" required>
             </v-text-field>
-            <br>
           </span>
 
-          <v-card-actions>
+          <v-card-actions
+          style="position: absolute; bottom: 0; left: 0; padding: 20px; width: 100%;">
             <v-btn color="orange lighten-2" text @click="show='login'"
-            :disabled="show === 'login'">
+            :class="{ selected: show === 'login' }">
               Login
             </v-btn>
             <v-btn color="orange lighten-2" text @click="show='reg'"
-            :disabled="show === 'reg'">
+            :class="{ selected: show === 'reg' }">
               Register
             </v-btn>
             <v-btn color="orange lighten-2" text @click="show='forgot'"
-            :disabled="show === 'forgot'">
+            :class="{ selected: show === 'forgot' }">
               Recover Account
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn v-if="show === 'login' && !submmitted" @click="login">Log In</v-btn>
-            <v-btn v-if="show === 'reg' && !submmitted" @click="register">Register</v-btn>
-            <v-btn v-if="show === 'forgot' && !submmitted" @click="reset">Reset</v-btn>
-            <v-progress-circular v-if="submitted" indeterminate color="primary">
+            <div>
+            <v-btn v-if="show === 'login' && !submitted" @click="login">Log In</v-btn>
+            <v-btn v-if="show === 'reg' && !submitted" @click="register">Register</v-btn>
+            <v-btn v-if="show === 'forgot' && !submitted" @click="reset">Reset</v-btn>
+            <v-progress-circular v-if="submitted" indeterminate color="primary"
+            style="margin-right:30px;">
             </v-progress-circular>
+            </div>
           </v-card-actions>
 
         </v-col>
@@ -69,6 +77,19 @@ export default {
       username: '',
       password: '',
       email: '',
+      usernameRules: [
+        (v) => !!v || 'Username is required',
+        (v) => v.length > 6 || 'Username must be more than 6 characters',
+        (v) => v.length < 16 || 'Username must be less than 16 characters',
+      ],
+      pwR: [
+        (v) => !!v || 'Password is required',
+        (v) => v.length >= 8 || 'Password must be more than 8 characters',
+      ],
+      emailRules: [
+        (v) => !!v || 'E-mail is required',
+        (v) => /.+@.+/.test(v) || 'E-mail must be valid',
+      ],
     };
   },
   methods: {
@@ -76,17 +97,21 @@ export default {
       try {
         const { username, password } = this;
 
+        const apiUrl = `${process.env.VUE_APP_API_URL}/api/user/login`;
+
         const body = JSON.stringify({ username, password });
 
         this.submitted = true;
 
-        const response = await fetch(process.env.API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
+        const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
 
         this.submitted = false;
 
         if (response.status !== 200) return this.$store.commit('notify', 'Incorrect username or password.');
 
         const jsonresponse = await response.json();
+
+        console.log(jsonresponse);
 
         return this.$store.commit('login', jsonresponse);
       } catch (err) {
@@ -97,7 +122,7 @@ export default {
       try {
         const { username, email, password } = this;
 
-        const apiUrl = `${process.env.API_URL}/user/register`;
+        const apiUrl = `${process.env.VUE_APP_API_URL}/api/user/register`;
 
         const body = JSON.stringify({ username, email, password });
 
@@ -107,9 +132,10 @@ export default {
 
         this.submitted = false;
 
-        const regFailedStr = 'Registration failed. Please make sure you entered all of the information correctly.';
-
-        if (response.status !== 201) return this.$store.commit('notify', regFailedStr);
+        if (response.status !== 201) {
+          const jsonRes = await response.json();
+          return this.$store.commit('notify', jsonRes);
+        }
 
         this.show = 'login';
 
@@ -142,3 +168,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+  .selected {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 5px;
+  }
+</style>

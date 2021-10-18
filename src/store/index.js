@@ -12,9 +12,8 @@ export default new Vuex.Store({
     loggedIn: false,
     token: '',
     username: '',
-    companyName: '',
-    companyDescription: '',
     companyImg: '',
+    email: '',
   },
   mutations: {
     notify(state, message) {
@@ -29,20 +28,15 @@ export default new Vuex.Store({
         loggedIn: true,
         token: response.token,
         username: response.username,
-        companyName: response.companyName,
-        companyDescription: response.companyDescription,
-        companyImg: response.imgUrl,
+        companyImg: response.companyImg,
+        email: response.email,
       });
-      // console.log(this.state);
-      // router.push({ path: '/account' });
     },
     logout(state) {
       Object.assign(state, {
         loggedIn: false,
         token: '',
         username: '',
-        companyName: '',
-        companyDescription: '',
         companyImg: '',
       });
     },
