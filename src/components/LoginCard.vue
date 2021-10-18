@@ -1,7 +1,5 @@
 <template>
-  <v-card elevation="2" max-width=550 width="100%"
-  style="padding:10px;max-height: 350px; height: 100%">
-
+  <v-card elevation="2" class="loginCard">
     <v-container>
       <v-row>
         <v-col>
@@ -21,6 +19,10 @@
             </v-text-field>
             <v-text-field v-model="password" :rules="pwR" label="Password" type="password" required>
             </v-text-field>
+            <v-text-field v-model="companyName" :counter="50" label="Company Name" required>
+            </v-text-field>
+            <v-text-field v-model="companyDescription" :counter="125" label="Company Description">
+            </v-text-field>
           </span>
 
           <span v-if="show === 'forgot'">
@@ -35,8 +37,7 @@
             </v-text-field>
           </span>
 
-          <v-card-actions
-          style="position: absolute; bottom: 0; left: 0; padding: 20px; width: 100%;">
+          <v-card-actions class="actions">
             <v-btn color="orange lighten-2" text @click="show='login'"
             :class="{ selected: show === 'login' }">
               Login
@@ -50,20 +51,19 @@
               Recover Account
             </v-btn>
             <v-spacer></v-spacer>
-            <div>
-            <v-btn v-if="show === 'login' && !submitted" @click="login">Log In</v-btn>
-            <v-btn v-if="show === 'reg' && !submitted" @click="register">Register</v-btn>
-            <v-btn v-if="show === 'forgot' && !submitted" @click="reset">Reset</v-btn>
-            <v-progress-circular v-if="submitted" indeterminate color="primary"
-            style="margin-right:30px;">
-            </v-progress-circular>
+            <div class="submitContainer">
+              <v-btn v-if="show === 'login' && !submitted" @click="login">Log In</v-btn>
+              <v-btn v-if="show === 'reg' && !submitted" @click="register">Register</v-btn>
+              <v-btn v-if="show === 'forgot' && !submitted" @click="reset">Reset</v-btn>
+              <v-progress-circular v-if="submitted" indeterminate color="primary"
+              style="margin-right:30px;">
+              </v-progress-circular>
             </div>
           </v-card-actions>
 
         </v-col>
       </v-row>
     </v-container>
-
   </v-card>
 </template>
 
@@ -77,6 +77,8 @@ export default {
       username: '',
       password: '',
       email: '',
+      companyName: '',
+      companyDescription: '',
       usernameRules: [
         (v) => !!v || 'Username is required',
         (v) => v.length > 6 || 'Username must be more than 6 characters',
@@ -111,8 +113,6 @@ export default {
 
         const jsonresponse = await response.json();
 
-        console.log(jsonresponse);
-
         return this.$store.commit('login', jsonresponse);
       } catch (err) {
         return this.$store.commit('notify', 'Error logging in. Please try again.');
@@ -120,11 +120,15 @@ export default {
     },
     async register() {
       try {
-        const { username, email, password } = this;
+        const {
+          username, email, password, companyName, companyDescription,
+        } = this;
 
         const apiUrl = `${process.env.VUE_APP_API_URL}/api/user/register`;
 
-        const body = JSON.stringify({ username, email, password });
+        const body = JSON.stringify({
+          username, email, password, companyName, companyDescription,
+        });
 
         this.submitted = true;
 
@@ -170,9 +174,38 @@ export default {
 </script>
 
 <style scoped>
+  .loginCard {
+    padding: 10px;
+    max-height: 500px;
+    height: 100%;
+    max-width: 550px;
+    width: 100%;
+  }
   .selected {
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 5px;
+  }
+  .actions {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 20px;
+    width: 100%;
+  }
+  @media only screen and (max-width: 600px) {
+    .loginCard {
+      margin: 10px;
+      max-height: none;
+      height: auto;
+    }
+    .actions {
+      position: static;
+      display: flex;
+      flex-direction: column-reverse;
+    }
+    .submitContainer {
+      margin-bottom: 25px;
+    }
   }
 </style>

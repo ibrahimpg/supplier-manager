@@ -1,16 +1,18 @@
 <template>
   <div class="contacts">
     <div class="contactsInner">
-      <AddContactCard />
+      <AddContactCard @loadContacts="loadContacts" />
       <ContactCard
+        @loadContacts="loadContacts"
         v-for='(contact) in contacts'
         :key='contact.key'
-        :contactId=contact[3].value
-        :contactType=contact[7].value
-        :email=contact[17].value
-        :mobilePhone=contact[30].value
-        :title=contact[31].value
-        :fullName=contact[36].value
+        :contactId=contact._id
+        :company=contact.companyName
+        :email=contact.emailAddress
+        :mobilePhone=contact.phoneNumber
+        :title=contact.jobTitle
+        :firstName=contact.firstName
+        :lastName=contact.lastName
       />
     </div>
   </div>
@@ -25,30 +27,29 @@ export default {
   components: { ContactCard, AddContactCard },
   data() {
     return {
-      // contacts: [],
+      contacts: [],
     };
   },
-  mounted() {
-    this.$nextTick(() => {
-      this.$store.dispatch('getContacts');
-    });
+  async mounted() {
+    this.loadContacts();
   },
   methods: {
-    updateContacts() { this.$store.dispatch('getContacts'); },
     async loadContacts() {
-      const apiLink = 'https://gto-supplier-portal-api.herokuapp.com/api/create-contact';
+      const apiLink = `${process.env.VUE_APP_API_URL}/api/contact/get`;
 
-      const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${this.token}` };
+      const headers = { Authorization: `Bearer ${this.token}` };
 
-      const body = JSON.stringify(this.cardData);
+      const response = await fetch(apiLink, { headers });
 
-      const response = await fetch(apiLink, { method: 'POST', headers, body });
+      const jsonres = await response.json();
 
-      console.log(response);
+      this.contacts = jsonres.reverse();
     },
   },
   computed: {
-    contacts() { return this.$store.state.supplierContacts; },
+    token() {
+      return this.$store.state.token;
+    },
   },
 };
 </script>

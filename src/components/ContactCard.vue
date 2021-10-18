@@ -1,16 +1,18 @@
 <template>
   <div class="contactCardContainer">
-    <v-card>
+    <v-card style="min-height:267px;">
 
       <v-card-title>{{name}}</v-card-title>
 
       <v-card-text>
         <b>{{company}}</b> | {{title}}
-        <br>
-        {{email}}
         <br><br>
-        {{phone}}
+        {{email}}
+        <br>
+        {{mobilePhone}}
       </v-card-text>
+
+      <br><br>
 
       <v-divider class="mx-4"></v-divider>
 
@@ -31,8 +33,8 @@ export default {
     company: String,
     title: String,
     email: String,
-    phone: String,
-    contactId: Number,
+    mobilePhone: String,
+    contactId: String,
   },
   computed: {
     token() {
@@ -44,15 +46,15 @@ export default {
   },
   methods: {
     async deleteContact() {
-      const apiLink = 'https://gto-supplier-portal-api.herokuapp.com/api/delete-contact';
+      const apiLink = `${process.env.VUE_APP_API_URL}/api/contact/delete`;
 
       const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${this.token}` };
 
       const body = JSON.stringify({ contactId: this.contactId });
 
-      const response = await fetch(apiLink, { method: 'DELETE', headers, body });
+      await fetch(apiLink, { method: 'DELETE', headers, body });
 
-      console.log(response);
+      this.$emit('loadContacts');
     },
   },
 };

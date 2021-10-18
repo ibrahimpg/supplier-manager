@@ -21,7 +21,7 @@
       <v-row>
 
         <v-col cols="12" sm="6" md="6" style="padding:0px 12px">
-          <v-text-field label="Company" v-model="cardData.company"></v-text-field>
+          <v-text-field label="Company" v-model="cardData.companyName"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="6" md="6" style="padding:0px 12px">
@@ -37,11 +37,11 @@
         </v-col>
 
         <v-col cols="12" sm="6" md="6" style="padding:0px 12px">
-          <v-text-field label="Mobile Phone" v-model="cardData.mobilePhone"></v-text-field>
+          <v-text-field label="Mobile Phone" v-model="cardData.phoneNumber"></v-text-field>
         </v-col>
 
         <v-col cols="12" sm="6" md="6" style="padding:0px 12px">
-          <v-text-field label="Email" v-model="cardData.email"></v-text-field>
+          <v-text-field label="Email" v-model="cardData.emailAddress"></v-text-field>
         </v-col>
 
       </v-row>
@@ -64,12 +64,12 @@ export default {
   data() {
     return {
       cardData: {
-        company: '',
-        title: '',
         firstName: '',
         lastName: '',
-        email: '',
-        phone: '',
+        phoneNumber: '',
+        emailAddress: '',
+        jobTitle: '',
+        companyName: '',
       },
       addClicked: false,
     };
@@ -81,15 +81,21 @@ export default {
   },
   methods: {
     async addContact() {
-      const apiLink = 'https://gto-supplier-portal-api.herokuapp.com/api/create-contact';
+      const apiUrl = `${process.env.VUE_APP_API_URL}/api/contact/add`;
 
       const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${this.token}` };
 
       const body = JSON.stringify(this.cardData);
 
-      const response = await fetch(apiLink, { method: 'DELETE', headers, body });
+      const response = await fetch(apiUrl, { method: 'POST', headers, body });
 
       console.log(response);
+
+      this.addClicked = false;
+
+      this.clear();
+
+      this.$emit('loadContacts');
     },
     toggle() {
       this.addClicked = !this.addClicked;

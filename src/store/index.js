@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import router from '../router';
 
 Vue.use(Vuex);
 
@@ -14,6 +15,8 @@ export default new Vuex.Store({
     username: '',
     companyImg: '',
     email: '',
+    companyName: '',
+    companyDescription: '',
   },
   mutations: {
     notify(state, message) {
@@ -30,6 +33,8 @@ export default new Vuex.Store({
         username: response.username,
         companyImg: response.companyImg,
         email: response.email,
+        companyName: response.companyName,
+        companyDescription: response.companyDescription,
       });
     },
     logout(state) {
@@ -39,6 +44,7 @@ export default new Vuex.Store({
         username: '',
         companyImg: '',
       });
+      router.push({ path: '/' });
     },
   },
   actions: {

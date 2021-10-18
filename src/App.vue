@@ -4,7 +4,7 @@
     <v-app-bar color="blue darken-1" dark app>
       <v-app-bar-nav-icon v-if="loggedIn" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <h2 style="user-select: none; margin-left: 5px;">Supplier Manager</h2>
+      <h2 class="siteTitle">Supplier Manager</h2>
 
       <v-spacer></v-spacer>
 
@@ -98,5 +98,14 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
+}
+.siteTitle {
+  user-select: none;
+  margin-left: 5px;
+}
+@media only screen and (max-width: 600px) {
+  .siteTitle {
+    display: none;
+  }
 }
 </style>
