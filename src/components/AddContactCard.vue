@@ -81,21 +81,25 @@ export default {
   },
   methods: {
     async addContact() {
-      const apiUrl = `${process.env.VUE_APP_API_URL}/api/contact/add`;
+      try {
+        const apiUrl = `${process.env.VUE_APP_API_URL}/api/contact/add`;
 
-      const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${this.token}` };
+        const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${this.token}` };
 
-      const body = JSON.stringify(this.cardData);
+        const body = JSON.stringify(this.cardData);
 
-      const response = await fetch(apiUrl, { method: 'POST', headers, body });
+        const response = await fetch(apiUrl, { method: 'POST', headers, body });
 
-      console.log(response);
+        console.log(response);
 
-      this.addClicked = false;
+        this.addClicked = false;
 
-      this.clear();
+        this.clear();
 
-      this.$emit('loadContacts');
+        this.$emit('loadContacts');
+      } catch (err) {
+        console.log(err);
+      }
     },
     toggle() {
       this.addClicked = !this.addClicked;
