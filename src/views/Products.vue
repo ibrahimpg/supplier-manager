@@ -1,6 +1,20 @@
 <template>
   <div class="products">
     <div class="productsInner">
+      <div
+        v-if="products.length === 0 && loading === false"
+        style="display:flex;justify-content:center;width:100%;align-items:center;"
+      >
+        <br><br><br>
+        <p>You have no products yet. Add new products
+        <router-link to='/new-product'> here</router-link></p>
+      </div>
+      <div
+        v-if="loading"
+        style="display:flex;justify-content:center;width:100%;margin-top:15px"
+      >
+        <v-progress-circular indeterminate color="primary"></v-progress-circular>
+      </div>
       <Product
         @loadProducts="loadProducts"
         v-for='(product) in products'
@@ -27,6 +41,7 @@ export default {
   components: { Product },
   data() {
     return {
+      loading: true,
       products: [],
     };
   },
@@ -35,15 +50,24 @@ export default {
   },
   methods: {
     async loadProducts() {
-      const apiLink = `${process.env.VUE_APP_API_URL}/api/product/get`;
+      try {
+        this.loading = true;
 
-      const headers = { Authorization: `Bearer ${this.token}` };
+        const apiLink = `${process.env.VUE_APP_API_URL}/api/product/get`;
 
-      const response = await fetch(apiLink, { headers });
+        const headers = { Authorization: `Bearer ${this.token}` };
 
-      const jsonres = await response.json();
+        const response = await fetch(apiLink, { headers });
 
-      this.products = jsonres.reverse();
+        const jsonres = await response.json();
+
+        this.products = jsonres.reverse();
+
+        this.loading = false;
+      } catch (err) {
+        this.loading = false;
+        console.log(err);
+      }
     },
   },
   computed: {

@@ -1,8 +1,8 @@
 <template>
-<div style="flex-basis: 33.333333%; margin: 0 20px; min-width: 374px;">
+<div style="flex-basis: 25%; margin: 0 20px; min-width: 354px;">
   <v-card
     class="mx-auto my-12"
-    max-width="374"
+    max-width="354"
   >
     <template slot="progress">
       <v-progress-linear
@@ -18,11 +18,13 @@
       <v-card-title
         style='min-height:128px;flex-direction:column;justify-content:center;align-items:flex-start'
       >
-        <div style="font-size:12px;">Status: {{productId}}</div>
+        <div style="font-size:12px;">Validity: {{productAvailClean}}</div>
         <div style="word-break:break-word">{{productName}}</div>
       </v-card-title>
 
       <v-card-text style="min-height:148px;">
+        {{productDescription}}
+        <br><br>
         {{productLocation}}
         <br><br>
         {{productTypeClean}}
@@ -62,20 +64,23 @@ export default {
     productTypeClean() {
       return this.productType.split(';').join(', ');
     },
+    productAvailClean() {
+      return this.productAvailableDates.replace(',', ' to ');
+    },
     token() {
       return this.$store.state.token;
     },
   },
   methods: {
-    async deletePricing() {
+    async deleteProduct() {
       try {
         const apiUrl = `${process.env.VUE_APP_API_URL}/api/product/delete`;
 
         const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${this.token}` };
 
-        const body = JSON.stringify(this.productId);
+        const body = JSON.stringify({ productId: this.productId });
 
-        const response = await fetch(apiUrl, { method: 'POST', headers, body });
+        const response = await fetch(apiUrl, { method: 'DELETE', headers, body });
 
         console.log(response);
 

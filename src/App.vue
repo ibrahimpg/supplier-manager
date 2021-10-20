@@ -15,7 +15,7 @@
       <img
         v-if="loggedIn"
         :src=companyImg alt="Company logo"
-        style="margin-right: 16px; height: 35px; width: 35px; border-radius: 50%"
+        style="margin-right: 16px; height: 35px; width:35px;border-radius:50%;object-fit:cover"
       >
 
       <v-btn
