@@ -195,13 +195,18 @@ export default {
 
         const apiUrl = `${process.env.VUE_APP_API_URL}/api/user/update-profile`;
 
+        const headers = {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.token}`,
+        };
+
         const body = {
           companyName: this.companyNameEditing,
           companyDescription: this.companyDescriptionEditing,
         };
 
         const response = await fetch(apiUrl, {
-          method: 'PATCH', headers: { Authorization: `Bearer ${this.token}` }, body: JSON.stringify(body),
+          method: 'PATCH', headers, body: JSON.stringify(body),
         });
 
         this.updatingProfile = false;
@@ -218,7 +223,28 @@ export default {
     },
     async updateEmail() {
       try {
-        return console.log('test');
+        this.updatingEmail = true;
+
+        const apiUrl = `${process.env.VUE_APP_API_URL}/api/user/update-email`;
+
+        const headers = {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.token}`,
+        };
+
+        const body = JSON.stringify({ email: this.emailEditing });
+
+        const response = await fetch(apiUrl, { method: 'PATCH', headers, body });
+
+        this.updatingEmail = false;
+
+        if (response.status !== 200) return this.$store.commit('notify', 'Error updating email.');
+
+        this.editing = false;
+
+        this.$store.commit('notify', 'Email updated. Check your inbox to verify your account.');
+
+        return this.$store.commit('updateAccountEmail', this.emailEditing);
       } catch (err) {
         this.updatingEmail = false;
         return this.$store.commit('notify', 'Error updating email.');
@@ -226,7 +252,28 @@ export default {
     },
     async updatePassword() {
       try {
-        return console.log('test');
+        this.updatingPassword = true;
+
+        const apiUrl = `${process.env.VUE_APP_API_URL}/api/user/update-password`;
+
+        const headers = {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.token}`,
+        };
+
+        const body = JSON.stringify({
+          oldPassword: this.oldPassword, newPassword: this.newPassword,
+        });
+
+        const response = await fetch(apiUrl, { method: 'PATCH', headers, body });
+
+        this.updatingPassword = false;
+
+        if (response.status !== 200) return this.$store.commit('notify', 'Error updating password.');
+
+        this.editing = false;
+
+        return this.$store.commit('notify', 'Password updated successfully.');
       } catch (err) {
         this.updatingPassword = false;
         return this.$store.commit('notify', 'Error updating password. Please make sure entered information is correct.');

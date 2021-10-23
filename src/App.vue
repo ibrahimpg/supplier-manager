@@ -8,14 +8,19 @@
 
       <v-spacer></v-spacer>
 
-      <h3 v-if="loggedIn" style="user-select: none; margin-right: 15px;">
+      <h3
+        @click="routeTo('/')"
+        v-if="loggedIn"
+        style="user-select: none; cursor: pointer; margin-right: 15px;"
+      >
         {{ this.$store.state.username }}
       </h3>
 
       <img
+        @click="routeTo('/')"
         v-if="loggedIn"
         :src=companyImg alt="Company logo"
-        style="margin-right: 16px; height: 35px; width:35px;border-radius:50%;object-fit:cover"
+        class="topLogoStyle"
       >
 
       <v-btn
@@ -102,6 +107,14 @@ export default {
 .siteTitle {
   user-select: none;
   margin-left: 5px;
+}
+.topLogoStyle {
+  margin-right:16px;
+  height:35px;
+  width:35px;
+  border-radius:50%;
+  object-fit:cover;
+  cursor:pointer;
 }
 @media only screen and (max-width: 600px) {
   .siteTitle {

@@ -228,6 +228,8 @@ export default {
 
         if (response.status === 201) return this.$router.push('/products');
 
+        if (response.status === 401) return this.$store.commit('notify', 'Your email must be verified in order to create a product.');
+
         return this.$store.commit('notify', 'Error adding product');
       } catch (err) {
         this.submitted = false;

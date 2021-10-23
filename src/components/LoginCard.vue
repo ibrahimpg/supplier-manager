@@ -29,11 +29,12 @@
             <p class="text-h4 text--primary">Reset Password</p>
             <div class="text--primary" style="max-width: 450px;">
               Your password will be reset and emailed to you.
-              Check your email for your new password and make
-              sure you change your password immediately.
+              Check your email after resetting and make
+              sure to switch to a secure password immediately
+              after logging in.
               <br><br>
             </div>
-            <v-text-field v-model="email" :rules="emailRules" label="E-mail" type="email" required>
+            <v-text-field v-model="email" label="E-mail" type="email" required>
             </v-text-field>
           </span>
 
@@ -152,7 +153,7 @@ export default {
       try {
         const { email } = this;
 
-        const apiUrl = `${process.env.API_URL}/user/reset-password`;
+        const apiUrl = `${process.env.VUE_APP_API_URL}/api/user/reset-password`;
 
         const body = JSON.stringify({ email });
 

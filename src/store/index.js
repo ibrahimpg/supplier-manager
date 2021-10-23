@@ -61,6 +61,11 @@ export default new Vuex.Store({
         companyDescription: response.companyDescription,
       });
     },
+    updateAccountEmail(state, response) {
+      Object.assign(state, {
+        email: response,
+      });
+    },
   },
   actions: {
   },
