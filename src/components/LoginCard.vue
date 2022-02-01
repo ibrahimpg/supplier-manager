@@ -116,6 +116,7 @@ export default {
 
         return this.$store.commit('login', jsonresponse);
       } catch (err) {
+        this.submitted = false;
         return this.$store.commit('notify', 'Error logging in. Please try again.');
       }
     },
